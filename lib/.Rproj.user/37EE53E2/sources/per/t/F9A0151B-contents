@@ -1,0 +1,157 @@
+#  -----------------------------------------------------------------------------
+# Test cognac
+# 2020/05/13
+# Ryan D. Crawford
+# ------------------------------------------------------------------------------
+#  
+# ------------------------------------------------------------------------------
+
+# ---- Load libraries ----------------------------------------------------------
+
+library( cognac )
+library( genomeToolBox )
+
+# ---- Variable initializations ------------------------------------------------
+
+load("../data/2020_07_02_calc_msa_dists.Rdata")
+load("../data/rdata/plotCols.Rdata")
+distMatList = c( distMatList, coreDistList )
+distMatList = distMatList[ order(names(distMatList) ) ]
+names( distMatList )
+# distMatList = distMatList[ -c( 5, 6 )]
+# names( distMatList )
+
+runDesc = c(
+  "Cognac Alignment: outgroup removed, core posiions", #1
+  "Cognac Alignment: outgroup removed", #2
+  "Cognac Alignment: core posiions", #3
+  "Cognac Alignment", #4
+  "Cognac Alignment: filtered alignment, core posiions", #5
+  "Cognac Alignment: filtered alignment", #6
+  "Cognac Alignment: low quality position filtered, core positions", #7
+  "Cognac Alignment: low quality position filtered", #8
+  "Whole genome Alignment: core posiions", #9
+  "Whole genome Alignment: outgroup removed, core posiions", #10
+  "Whole genome Alignment: outgroup removed", #11
+  "Whole genome Alignment", #12
+  "Recombination filtered Alignment: core posiions", #13
+  "Recombination filtered Alignment: outgroup removed, core posiions", #14
+  "Recombination filtered Alignment: outgroup removed", #15
+  "Recombination filtered Alignment" #16
+  )
+
+# ---- Function definitions ----------------------------------------------------
+
+source('~/Documents/genomeToolBox/R/MakePairWiseDistScatter.R')
+
+FixDimNames = function( inMat )
+{
+  
+  idx = which( row.names(inMat) == "gi|661922017|gb|CP008827.1|" )
+  row.names(inMat)[idx] = "1087440.3"
+  colnames(inMat)[idx]  = "1087440.3"
+  
+  idx = which( row.names(inMat) == "GCA_002951635.1" )
+  colnames(inMat)[idx]  = "573.17909"
+  row.names(inMat)[idx] = "573.17909"
+
+  idxs = which( grepl( "_S", row.names(inMat), fixed = TRUE ) )
+  for( i in idxs )
+  {
+    name = row.names(inMat)[i]
+    name = strsplit( name, "_S")[[1]][1]
+    row.names(inMat)[i] = name
+    colnames(inMat)[i] = name
+  }
+  return( inMat )
+}
+
+# ------------------------------------------------------------------------------
+
+genomeIds = row.names( distMatList[[12]] )[ -c(2) ]
+
+for ( i in 1:length(distMatList) )
+{
+  cat(i, '\n')
+  if ( row.names( distMatList[[i]] )[1] == '' )
+  {
+    dimnames( distMatList[[i]] ) = list( genomeIds, genomeIds )
+  }
+  distMatList[[i]] = FixDimNames( distMatList[[i]] )
+}
+
+# ------------------------------------------------------------------------------
+
+for ( i in 1:6 )
+{
+  for ( j in 7:14 )
+  {
+    path = paste0(
+      "../figures/2020_07_09_alignment_benchmarking_", i, '_', j, ".png"
+      )
+    png( path, height = 850, width = 850 )
+    MakePairWiseDistScatter( 
+      distMatList[[i]], distMatList[[j]], runDesc[i], runDesc[j]
+      )
+    abline( 0, 1 )
+    dev.off()
+  }
+}
+
+for ( i in 1:6 )
+{
+  for ( j in 1:6 )
+  {
+    path = paste0(
+      "../figures/2020_07_09_alignment_benchmarking_", i, '_', j, ".png"
+      )
+    png( path )
+    MakePairWiseDistScatter( 
+      distMatList[[i]], distMatList[[j]], runDesc[i], runDesc[j]
+      )
+    abline( 0, 1 )
+    dev.off()
+  }
+}
+
+i = 7
+j = 11
+MakePairWiseDistScatter( 
+  distMatList[[i]], distMatList[[j]], runDesc[i], runDesc[j]
+  )
+abline( 0, 1 )
+
+# ------------------------------------------------------------------------------
+
+idxs = c( 3, 4, 5, 6, 7, 8 )
+idxs = c( 4, 6, 3, 5 )
+idxs = c( 4, 6, 8 )
+idxs = c( 4, 8, 12, 16 )
+MakePairwiseDistHistogram(
+  distMatList = distMatList[idxs],
+  binSize = 25,
+  xLabBin = 1000,
+  plotCols = plotCols, 
+  titles = runDesc[ idxs ]
+  )
+
+# ---- Save the data -----------------------------------------------------------
+
+save( 
+  file = paste0("../analysis/2020_06_30_dist_mats/", runId, ".Rdata"), 
+  list = ls() 
+  )
+
+# ------------------------------------------------------------------------------
+# pervW = 171.8 
+# curW  = 169.6
+# tarW  = 167.7
+# loss  = pervW - curW
+# nDays = 9
+# rate  = ( loss ) / nDays
+# ( curW - tarW ) / rate 
+# prW = 181.6 
+# totDays = 94
+# tRate = ( prW - curW ) / totDays
+# curW - ( rate * 45 )
+# curW - ( tRate * 45 )

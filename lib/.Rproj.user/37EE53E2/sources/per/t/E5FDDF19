@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1602678570542.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1715076838",
+    "id" : "E5FDDF19",
+    "lastKnownWriteTime" : 1602696102,
+    "last_content_update" : 1602696102211,
+    "path" : "~/gl/cognac_paper/lib/2020_05_30_download_patric_genomes.R",
+    "project_path" : "2020_05_30_download_patric_genomes.R",
+    "properties" : {
+        "cursorPosition" : "119,0",
+        "scrollLine" : "74",
+        "source_window_id" : "wjs4b169i8tfd"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

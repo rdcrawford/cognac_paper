@@ -1,0 +1,27 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1602683546218.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "13|1|35|0|\n39|1|44|0|\n47|1|51|0|\n54|1|82|0|\n85|1|100|0|\n",
+    "hash" : "4104725863",
+    "id" : "1172CDB5",
+    "lastKnownWriteTime" : 1602696102,
+    "last_content_update" : 1602696102707,
+    "path" : "~/gl/cognac_paper/lib/2020_06_08_cognac_genus_run_stats.R",
+    "project_path" : "2020_06_08_cognac_genus_run_stats.R",
+    "properties" : {
+        "cursorPosition" : "176,0",
+        "scrollLine" : "136",
+        "source_window_id" : "wjs4b169i8tfd",
+        "tempName" : "Untitled3"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

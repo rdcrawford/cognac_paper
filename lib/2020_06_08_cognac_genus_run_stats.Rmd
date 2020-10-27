@@ -1,0 +1,240 @@
+---
+title: "Genus Cognac Run Results"
+author: "Ryan D. Crawford"
+date: "6/8/2020"
+output: pdf_document
+---
+
+```{r, include = TRUE, echo = FALSE }
+
+logFiles = system("ls 2020_06_02_run_cognac_for_genus_*.log", intern = TRUE )
+rId = "2020_06_02_run_cognac_for_genus_"
+genusNames = sapply( logFiles, 
+  function(x) strsplit( gsub(rId, '', x), '-' )[[1]][1], USE.NAMES = FALSE
+  )
+
+load( "../data/rdata/plotCols.Rdata" )
+
+# ------------------------------------------------------------------------------
+
+# This function 
+GetElementAtIdx = function( inLine, idx )
+{
+  line = strsplit( inLine, ' ' )[[1]]
+  line = line[ line != '' ]
+  line = line[ 2:length(line) ]
+  return( as.numeric( line[ idx ] ) )
+}
+
+GetValFromLog = function( str, idx, log )
+{
+  lineIdxs =  grep( str, log )
+  lineVals = sapply( lineIdxs, function(i) GetElementAtIdx( log[ i ], idx ) )
+  return( list(lineVals) )
+}
+
+GetRunStats = function( log )
+{
+  lineStrs = c( 
+    "genomes were input", 
+    "Running on:", 
+    "Parsed the data for", 
+    "to be included in the alignment", 
+    "The total alignment length",
+    "Finished in"
+    )
+  
+  lineIdxs = c( 1, 3, 5, 1, 6, 3 )
+  
+  runStatList = sapply( 1:length(lineStrs),
+    function(i) GetValFromLog( lineStrs[i], lineIdxs[i], log )
+    )
+  
+  lineNames = c(
+    "Input genomes", 
+    "Number of cores", 
+    "Total number of genes",
+    "Number of core genes", 
+    "Allignment length",
+    "Step times"
+    )
+  
+  names( runStatList ) = lineNames
+
+  return( list( runStatList ) )
+}
+
+MakeBarPlot = function( runStats, lIdx, yLab )
+{
+  plotVals = sapply( 1:length(runStats), 
+    function(i) runStats[[i]][[ lIdx ]] 
+    )
+  names(plotVals) = names( runStats )
+  par( mar = c(7.1, 8.5, 4.1, 1.1) )
+  barplot(
+    plotVals,
+    col    = plotCols,
+    border = plotCols,
+    main   = names( runStats[[1]] )[lIdx],
+    las    = 2,
+    ylim   = genomeToolBox::GetAxisRange( max(plotVals), 5 ),
+    ylab = yLab
+    )
+}
+
+# ------------------------------------------------------------------------------
+
+runStats = sapply( logFiles, function(x) GetRunStats( readLines(x) ) )
+names(runStats) = genusNames
+
+nGenomes = sapply( 1:length(runStats), 
+  function(i) runStats[[i]][[ 1 ]] 
+  )
+runStats = runStats[ order( nGenomes, decreasing = TRUE ) ]
+yLabs = c(
+  "Number of genomes", 
+  "Number of cores", 
+  "Number of genes",
+  "Number of core genes", 
+  "Allignment length (amino acid residues)"
+  )
+
+```
+
+
+
+```{r, include = TRUE, echo = FALSE, fig.height=6.5, fig.width=4.75 }
+i = 1
+MakeBarPlot( runStats, i, yLabs[i] )
+```
+
+```{r, include = TRUE, echo = FALSE, fig.height=6.5, fig.width=4.75 }
+i = 3
+MakeBarPlot( runStats, i, yLabs[i] )
+```
+
+```{r, include = TRUE, echo = FALSE, fig.height=6.5, fig.width=4.75 }
+i = 4
+MakeBarPlot( runStats, i, yLabs[i] )
+```
+
+```{r, include = TRUE, echo = FALSE, fig.height=6.5, fig.width=4.75 }
+i = 5
+MakeBarPlot( runStats, i, yLabs[i] )
+```
+
+
+```{r, include = TRUE, echo = FALSE, fig.height=6.5, fig.width=4.75 }
+
+timeMat = sapply( 1:length(runStats), 
+  function(i) runStats[[i]][[6]]
+  )
+
+totalTime = timeMat[ 10,  ]
+names( totalTime ) = names( runStats )
+par( mar = c(7.1, 7.1, 4.1, 1.1) )
+barplot(
+  totalTime,
+  col    = plotCols,
+  border = plotCols,
+  main   = "Total Run time",
+  las    = 2,
+  ylim   = genomeToolBox::GetAxisRange( max(totalTime), 5 ),
+  ylab   = "Run-time (minutes)"
+  )
+```
+
+
+```{r, include = TRUE, echo = FALSE, fig.height=8, fig.width=6 }
+
+timeMat[ 6, ] = sapply( 1:ncol( timeMat), function(j) sum( timeMat[ 6:9, j] ) )
+timeMat = timeMat[ 1:6, ]
+
+colnames(timeMat) = names( runStats )
+set.seed( 144 )
+plotCols = plotCols[ sample.int( length(plotCols) ) ]
+
+steps = c(
+  "Parsing the data on the input genomes",
+  "Finding orthologs with cd-hit",
+  "Filtering for single copy genes",
+  "Selecting genes to include in the alignment",
+  "Aligning and concatenating orthologous genes",
+  "Creating output files"
+  )
+par( mar = c(7.1, 7.1, 4.1, 1.1) )
+barplot(
+  timeMat,
+  col    = plotCols,
+  border = plotCols,
+  main   = "Run time by step",
+  las    = 2,
+  ylim   = genomeToolBox::GetAxisRange( max( colSums(timeMat) ), 5 ),
+  ylab   = "Run-time (minutes)"
+  )
+
+legend( 
+  "topright",
+  legend = steps,
+  col = plotCols,
+  pch = 15
+  )
+
+```
+
+
+```{r, include = TRUE, echo = FALSE, fig.height=8, fig.width=6 }
+
+st258log = readLines( "2020_05_26_ST258_cognac_algns-7663865.log" )
+startPosiions = grep( "Creating concatenated gene alignment", st258log )
+endPositions = c( 
+  sapply( 2:length(startPosiions), function(i) startPosiions[i] - 1 ),
+  length(st258log)
+  )
+
+st258RunStats = sapply( 1:length(startPosiions), 
+  function(i) GetRunStats( st258log[ startPosiions[i]:endPositions[i] ] )
+  )
+
+timeMat = sapply( 1:length(st258RunStats), 
+  function(i) st258RunStats[[i]][[6]]
+  )
+nCores = sapply( 1:length(st258RunStats),
+  function(i) st258RunStats[[i]][[2]][1]
+  )
+colnames(timeMat) = nCores
+
+
+
+totalTime = timeMat[ 10,  ]
+names( totalTime ) = nCores
+par( mar = c(7.1, 7.1, 4.1, 1.1) )
+plot(
+  nCores,
+  totalTime,
+  col    = plotCols[2],
+  main   = "Total Run time",
+  las    = 2,
+  ylim   = c( 0 , 60 ),
+  xlim   = c( 0, 12 ),
+  pch    = 19,
+  ylab   = "Run-time (minutes)",
+  xlab   = "Number of CPUs"
+  )
+lines(
+  nCores,
+  totalTime,
+  col  = plotCols[2], 
+  xlim = range( nCores ), 
+  ylim = range( totalTime ),
+  pch  = 16,
+  lwd  = 1.5
+  )
+
+```
+
+
+```{r, include = TRUE, echo = FALSE, fig.height=8, fig.width=6 }
+
+c
+```

@@ -1,0 +1,124 @@
+#  -----------------------------------------------------------------------------
+# 
+# 2020/05/20
+# Ryan D. Crawford
+# ------------------------------------------------------------------------------
+#  
+# ------------------------------------------------------------------------------
+
+# ---- Load libraries ----------------------------------------------------------
+
+library( cognac )
+
+# ---- Function definitions ----------------------------------------------------
+
+
+FilterHighVarPartitions = function()
+{
+  load("../data/2020_05_26_ST258_cognac_algns.Rdata")
+  outAlgnPath = gsub( ".fasta", "_outliers_removed.fasta", algnData$ntAlgnPath )
+  RemoveHighVarPartitions( algnData, "nt", outAlgnPath )
+  return( outAlgnPath )
+}
+
+# ---- Variable initializations ------------------------------- -----------------
+
+# Create a vector with the paths to the alignments
+msas = c(
+  "../data/alignments/2020_01_23_09_KPNIH1_wg_algn.fasta",
+  "../data/alignments/2020_01_23_09_KPNIH1_wg_algn_out_group_removed.fasta",
+  "../data/alignments/2020_01_23_KPNIH1_gubbins_filtered.fasta",
+  "../data/alignments/2020_01_23_KPNIH1_gubbins_filtered_out_group_removed.fasta",
+  paste0("../analysis/2020_05_26_ST258_cognac_algns/2020_05_26_ST258",
+    "_cognac_algns_1_T_concatenated_gene_nt_alignment_no_outgroup.fasta"
+    ),
+  paste0("../analysis/2020_05_26_ST258_cognac_algns/",
+    "2020_05_26_ST258_cognac_algns_1T_concatenated_gene_nt_alignment.fasta"
+    ),
+  "../data/2020_07_14_ST258_cognac_nt_algn_filtered_45.fasta"
+  )
+
+# Add the alignment with the outlier genes removed
+msas = c( msas, FilterHighVarPartitions() )
+
+# ------------------------------------------------------------------------------
+
+cat( "Calculating the alignment distances\n" )
+distMatList = sapply( msas, function(x) 
+{
+  cat( x , '\n')
+  return( list( CreateAlgnDistMat( x, "raw") ) )
+})
+save( file = paste0( "../data/2020_07_02_calc_msa_dists.Rdata"), list = ls() )
+
+# ------------------------------------------------------------------------------
+
+cat( "Creating the core genome alignments\n" )
+coreAlgnPaths = gsub( ".fasta", "_core_positions.fasta", msas )
+
+for ( i in 1:length(msas) )
+{
+  cat( msas[i], '\n')
+  FilterAlgnPositions ( msas[i], coreAlgnPaths[i],  minGapFrac = 0 )
+}
+cat( "Calculating the core genome distances\n" )
+coreDistList = sapply( coreAlgnPaths, function(x) 
+{
+  cat( x, '\n' )
+  return( list( CreateAlgnDistMat( x, "raw" ) ) )
+})
+
+# algnLen = nchar( ParseFasta( msas[7] )[1] )
+# partitionDistList = CalcAlgnPartitionDists( 
+#   msas[7], "raw", seq(1, algnLen, 50 ) 
+#   )
+# 
+# refCounts = sapply( 1:length(partitionDistList), 
+#   function(i) mean( partitionDistList[[i]][ 1, ] )
+#   )
+# png( "../figures/2020_07_09_mean_reference_genome_distances_filtered_algn.png")
+# barplot(
+#   refCounts,
+#   col    = "darkblue", 
+#   border = "darkblue",
+#   main   = "Mean number of variants to KPNIH1",
+#   xlab   = "Window (50 nt)",
+#   ylab   = "Mean distance from reference genome"
+#   )
+# dev.off()
+
+# png( "../figures/2020_07_09_partition_distances.png")
+# barplot(
+#   partitionCounts,
+#   col = "darkblue", 
+#   border = "darkblue",
+#   main = "Sum of alignment vars",
+#   xlab = "Window (50 nt)",
+#   ylab = "Sum of disttance matrix"
+#   )
+# dev.off()
+# 
+# refCounts = sapply( 1:length(partitionDistList), 
+#   function(i) mean( partitionDistList[[i]][ 1, ] )
+#   )
+# 
+# png( "../figures/2020_07_09_mean_reference_genome_distances.png")
+# barplot(
+#   refCounts,
+#   col = "darkblue", 
+#   border = "darkblue",
+#   main = "Mean number of variants to KPNIH1",
+#   xlab = "Window (50 nt)",
+#   ylab = "Mean distance from reference genome"
+#   )
+# dev.off()
+
+
+# ---- Save the data -----------------------------------------------------------
+
+save( 
+  file = "../data/2020_07_02_calc_msa_dists.Rdata", 
+  list = c( "distMatList", "coreDistList")
+  )
+
+# ------------------------------------------------------------------------------

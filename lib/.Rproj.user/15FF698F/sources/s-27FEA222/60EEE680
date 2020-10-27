@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1594900037535.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "60EEE680",
+    "lastKnownWriteTime" : 1594817353,
+    "last_content_update" : 1594900087535,
+    "path" : "/gpfs/accounts/esnitkin_root/esnitkin/rcrawfo/cognac_paper/lib/2020_07_14_filter_low_qual_cognac_positions.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "24,0",
+        "scrollLine" : "15"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

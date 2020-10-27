@@ -1,0 +1,157 @@
+#  -----------------------------------------------------------------------------
+# 
+# 2020/05/20
+# Ryan D. Crawford
+# ------------------------------------------------------------------------------
+#  
+# ------------------------------------------------------------------------------
+
+# ---- Load libraries ----------------------------------------------------------
+
+library( cognac )
+
+# ---- Variable initializations ------------------------------- -----------------
+
+load( "../data/2020_05_26_ST258_cognac_algns.Rdata" )
+
+curDate = "2020_07_14"
+
+rData = "../data/2020_07_14_filter_low_qual_cognac_positions.Rdata"
+load( rData )
+
+figDir = "../figures/2020_07_14_filter_low_qual_cognac_positions.Rdata"
+if( !file.exists( figDir ) ) system( paste( "mkdir", figDir ) )
+
+# ---- Function definitions ----------------------------------------------------
+
+GetMin = function( distMat )
+{
+  return( min( as.dist( distMat ) ) )
+}
+
+GetMax = function( distMat )
+{
+  return(  max( as.dist( distMat ) ) )
+}
+
+GetMeanRef = function( distMat )
+{
+  return( mean( distMat[ 1, 2:ncol( distMat ) ] ) )
+}
+
+GetSum = function( distMat )
+{
+  return(  sum( as.dist( distMat ) ) )
+}
+
+GetMinBlosumScore = function( algnPath, algnLen, binVal )
+{
+  # Create the partitions 
+  partitions = seq( 1, algnLen, binVal )
+  
+  # Get the blosum distances for each partition in the alingnment 
+  distMatList = 
+    CalcAlgnPartitionDists( algnData$aaAlgnPath, "logLike", partitions )
+
+  # Find partitions where there are negative alignment values indicating
+  # poor alignment quality
+  minVals = sapply( 1:length(distMatList), 
+    function(i) min( as.dist( distMatList[[i]] ) )
+    )
+  
+  return( minVals )
+}
+
+# ------------------------------------------------------------------------------
+
+# Create the partiions accross the alignmet
+binVal = 15
+
+algnLen = 963167
+
+minScores = GetMinBlosumScore( algnData$aaAlgnPath, algnLen, binVal )
+
+# ------------------------------------------------------------------------------
+
+# Find th positions with a negative score
+isLowQual = minScores < 0
+
+# Find the positions of the low quality partitions in the 
+aaEndPos   = which( isLowQual ) * binVal
+aaStartPos = aaEndPos - binVal + 1
+
+
+ntBinVal   = binVal * 3 
+ntEndPos   = aaEndPos * 3
+ntStartPos = ntEndPos - ntBinVal + 1
+
+# Delete the poor quality positions an write to the new alignmet
+filteredAaAlgnPath = paste0(
+  "../data/", curDate, "_ST258_cognac_aa_algn_filtered_", binVal, ".fasta"
+  )
+DeletePartitions( 
+  algnData$aaAlgnPath, aaStartPos, aaEndPos, filteredAaAlgnPath 
+  )
+
+# Delete the poor quality positions an write to the new alignmet
+filteredNtAlgnPath = paste0(
+  "../data/", curDate, "_ST258_cognac_nt_algn_filtered_", ntBinVal, ".fasta"
+  )
+DeletePartitions(
+  algnData$ntAlgnPath, ntStartPos, ntEndPos, filteredNtAlgnPath 
+  )
+
+# ------------------------------------------------------------------------------
+
+numRemoved = sum( isLowQual ) * binVal
+filterAlgnMinDists = 
+  GetMinBlosumScore( algnData$aaAlgnPath, algnLen - numRemoved, binVal )
+
+# ------------------------------------------------------------------------------
+
+figPath = gsub(' ', '_', paste0( figDir, curDate, "_min_dist", binVal ) )
+png( filename = figPath, height = 1700, width = 850 )
+barplot(
+  minScores,
+  main   = "Cognac alignment minimum Blosum distance" ,
+  xlab   = paste0("Partiton (", binVal, " residues)"),
+  ylab   = "Alignment Distance",
+  col    = "#212759",
+  border = "#212759"
+  )
+barplot(
+  filterAlgnMinDists,
+  main   = "Filtered alignment minimum Blosum distance",
+  xlab   = paste0("Partiton (", binVal, " residues)"),
+  ylab   = "Alignment Distance",
+  col    = "#212759",
+  border = "#212759"
+  )
+dev.off()
+
+figPath = gsub(' ', '_', paste0( figDir, curDate, "_min_dist_sorted", binVal ) )
+png( filename = figPath, height = 1700, width = 850 )
+barplot(
+  minScores[ order(minScores) ],
+  main   = "Cognac alignment minimum Blosum distance" ,
+  xlab   = paste0("Partiton (", binVal, " residues)"),
+  ylab   = "Alignment Distance",
+  col    = "#212759",
+  border = "#212759"
+  )
+barplot(
+  filterAlgnMinDists[ order(filterAlgnMinDists) ],
+  main   = "Filtered alignment minimum Blosum distance",
+  xlab   = paste0("Partiton (", binVal, " residues)"),
+  ylab   = "Alignment Distance",
+  col    = "#212759",
+  border = "#212759"
+  )
+dev.off()
+
+
+# ---- Save the data -----------------------------------------------------------
+
+save( file = rData, list = ls() )
+
+# ------------------------------------------------------------------------------

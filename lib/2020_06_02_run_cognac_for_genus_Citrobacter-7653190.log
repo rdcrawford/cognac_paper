@@ -1,0 +1,55 @@
+
+This version of R is a base installation only, with no additional
+libraries. The gcc/8.2.0 compiler is being automatically loaded. See
+module help for more information. The gcc/8.2.0 compiler is required in
+order to be able to load additional libraries for your use. If you unload
+the gcc module, you will not be able to install new libraries for R.
+
+
+
+
+Creating concatenated gene alignment:
+  -- 262 genomes were input
+  -- Writing results to: ../analysis/2020_06_02_genus_cognac_aligments/Citrobacter/
+  -- Running on: 12 cores
+
+Step 1: parsing the data on the input genomes
+  -- Parsed the data for 1356975 coding genes
+  -- Finished in 0.32 minutes
+
+Step 2: finding orthologs with cd-hit
+  -- The genes were classified into 73371 clusters of orthologous genes
+  -- Continuing with 3079 genes present in at least 220 occurrences
+  -- Finished in 2.15 minutes
+
+Step 3: filtering for single copy genes
+  -- 163 multi-copy genes were identified
+  -- After filtering there are 2916 remaining genes
+  -- Finished in 0.01 minutes
+
+Step 4: selecting genes to include in the alignment
+  -- 20 genomes are missing greater than 1% of genes
+  -- There are 242 genomes remaining
+  -- 1864 genes met the criteria to be included in the alignment
+  -- Finished in 0.02 minutes
+
+Step 5: aligning and concatenating orthologous genes
+  -- 5 of genes without variation were removed
+  -- 1859 were included in the alignment
+  -- The total alignment length is 590749
+  -- Finished in 11.61 minutes
+
+Step 6: creating output files
+  -- Finished in 0.01 minutes
+  -- Reverse translate:
+  -- Finished in 0.78 minutes
+  -- Distance matrix:
+  -- Finished in 0.18 minutes
+  -- Finished in 0 minutes
+
+Run complete
+  -- Amino acid alignment written to: ../analysis/2020_06_02_genus_cognac_aligments/Citrobacter/Citrobacter_cognac_algn_concatenated_gene_aa_alignment.fasta 
+  -- Nucleotide alignment written to: ../analysis/2020_06_02_genus_cognac_aligments/Citrobacter/Citrobacter_cognac_algn_concatenated_gene_nt_alignment.fasta 
+  -- Finished in 14.78 minutes
+
+

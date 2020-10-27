@@ -1,0 +1,46 @@
+
+
+Creating concatenated gene alignment:
+  -- 3051 genomes were input
+  -- Writing results to: ../analysis/2020_06_02_genus_cognac_aligments/Pseudomonas/
+  -- Running on: 12 cores
+
+Step 1: parsing the data on the input genomes
+  -- Parsed the data for 19509251 coding genes
+  -- Finished in 4.72 minutes
+
+Step 2: finding orthologs with cd-hit
+  -- The genes were classified into 269449 clusters of orthologous genes
+  -- Continuing with 5021 genes present in at least 2567 occurrences
+  -- Finished in 42.73 minutes
+
+Step 3: filtering for single copy genes
+  -- 88 multi-copy genes were identified
+  -- After filtering there are 4933 remaining genes
+  -- Finished in 0.15 minutes
+
+Step 4: selecting genes to include in the alignment
+  -- Removing 1 genomes missing all of the selected core genes
+  -- 406 genomes are missing greater than 1% of genes
+  -- There are 2645 genomes remaining
+  -- 1065 genes met the criteria to be included in the alignment
+  -- Finished in 1.57 minutes
+
+Step 5: aligning and concatenating orthologous genes
+  -- The total alignment length is 313694
+  -- Finished in 37.4 minutes
+
+Step 6: creating output files
+  -- Finished in 0.07 minutes
+  -- Reverse translate:
+  -- Finished in 7.73 minutes
+  -- Distance matrix:
+  -- Finished in 5.35 minutes
+  -- Finished in 0.42 minutes
+
+Run complete
+  -- Amino acid alignment written to: ../analysis/2020_06_02_genus_cognac_aligments/Pseudomonas/Pseudomonas_cognac_algn_concatenated_gene_aa_alignment.fasta 
+  -- Nucleotide alignment written to: ../analysis/2020_06_02_genus_cognac_aligments/Pseudomonas/Pseudomonas_cognac_algn_concatenated_gene_nt_alignment.fasta 
+  -- Finished in 95.42 minutes
+
+

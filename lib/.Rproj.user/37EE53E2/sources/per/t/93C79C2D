@@ -1,0 +1,27 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1594128657973.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2562056338",
+    "id" : "93C79C2D",
+    "lastKnownWriteTime" : 1594813554,
+    "last_content_update" : 1594813554241,
+    "path" : "~/gl/cognac_paper/lib/2020_07_10_test_algn_filtering_functions.R",
+    "project_path" : "2020_07_10_test_algn_filtering_functions.R",
+    "properties" : {
+        "cursorPosition" : "80,3",
+        "scrollLine" : "0",
+        "source_window_id" : "wjs4b169i8tfd",
+        "tempName" : "Untitled6"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 31,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,46 @@
+
+
+Creating concatenated gene alignment:
+  -- 11639 genomes were input
+  -- Writing results to: ../analysis/2020_06_02_genus_cognac_aligments/Escherichia/
+  -- Running on: 12 cores
+
+Step 1: parsing the data on the input genomes
+  -- Parsed the data for 61042774 coding genes
+  -- Finished in 15.32 minutes
+
+Step 2: finding orthologs with cd-hit
+  -- The genes were classified into 431867 clusters of orthologous genes
+  -- Continuing with 3203 genes present in at least 9794 occurrences
+  -- Finished in 152.57 minutes
+
+Step 3: filtering for single copy genes
+  -- 162 multi-copy genes were identified
+  -- After filtering there are 3041 remaining genes
+  -- Finished in 0.47 minutes
+
+Step 4: selecting genes to include in the alignment
+  -- Removing 21 genomes missing all of the selected core genes
+  -- 900 genomes are missing greater than 1% of genes
+  -- There are 10739 genomes remaining
+  -- 1353 genes met the criteria to be included in the alignment
+  -- Finished in 1.2 minutes
+
+Step 5: aligning and concatenating orthologous genes
+  -- The total alignment length is 387857
+  -- Finished in 312.23 minutes
+
+Step 6: creating output files
+  -- Finished in 0.34 minutes
+  -- Reverse translate:
+  -- Finished in 57.82 minutes
+  -- Distance matrix:
+  -- Finished in 120.51 minutes
+  -- Finished in 48.25 minutes
+
+Run complete
+  -- Amino acid alignment written to: ../analysis/2020_06_02_genus_cognac_aligments/Escherichia/Escherichia_cognac_algn_concatenated_gene_aa_alignment.fasta 
+  -- Nucleotide alignment written to: ../analysis/2020_06_02_genus_cognac_aligments/Escherichia/Escherichia_cognac_algn_concatenated_gene_nt_alignment.fasta 
+  -- Finished in 693.38 minutes
+
+
